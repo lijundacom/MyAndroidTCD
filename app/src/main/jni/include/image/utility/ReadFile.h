@@ -1,0 +1,14 @@
+#ifndef READFILE_H
+#define READFILE_H
+#include <fstream>
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
+#include <string.h>
+#include "../../../include/image/utility/MyIostream.h"
+	signed short int* ReadFile(char* fileName,int deepPoint,int ensemble,long IQOffset);
+	void PrintArray(int deepPoint,int  ensemble,signed short int* IQArray);
+	void PrintArray(int deepPoint,int  ensemble,float* IQArray);
+	void PrintArray(int deepPoint,signed short int* Array);
+	void PrintArray(int deepPoint,float* velocityArray);
+#endif
