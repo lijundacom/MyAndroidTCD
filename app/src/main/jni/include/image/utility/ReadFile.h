@@ -10,5 +10,6 @@
 	void PrintArray(int deepPoint,int  ensemble,signed short int* IQArray);
 	void PrintArray(int deepPoint,int  ensemble,float* IQArray);
 	void PrintArray(int deepPoint,signed short int* Array);
+	void PrintArray(int deepPoint,int* Array);
 	void PrintArray(int deepPoint,float* velocityArray);
 #endif

@@ -75,7 +75,16 @@ int GetDispMulitDeepModeTCDFrame(char** pCFrameDisp);
 //		true-设置B模式的信号处理参数成功
 // ------------------------------------------------------------
 //int SetCModeParamOfSignal(ParamAdjust::CParam * param);
-
+// --------------------------------------------------------------
+// Description	:获取最新数据接口，供显示模块调用以获取Image处理后的数据
+// Parameters	:
+//		pMultiDeepModeTCDFrameDisp-ARGB颜色数组指针
+// Return Value	:
+//		0-获取数据失败
+//		1-获取数据成功
+// --------------------------------------------------------------
+int* GetMultiDeepModeTCDFrameBuffer(int* pMultiDeepModeTCDFrameDisp);
+//int GetMultiDeepModeTCDFrameBuffer(int* pMultiDeepModeTCDFrameDisp);
 
 
 #endif /* MULTIDEEPMODETCDTHREAD_H_ */

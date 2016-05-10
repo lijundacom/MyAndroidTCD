@@ -53,6 +53,30 @@ int MultiDeepModeTCDWallFilter(const float *pMDWFCoef, signed short int *pSrc, f
 
 	return 0;
 }
+//----------------------------------------
+//将-π到+π映射到-127到+127之间
+//--------------------------------------
+static inline int GetVelocity(float velocity){
+	int outdata_velocity = 0;
+	velocity = velocity * 40.4459;
+	if (velocity > 127)
+	{
+		outdata_velocity = 127;
+	} else if (velocity < -127)
+	{
+		outdata_velocity = -127;
+	} else
+	{
+		outdata_velocity = ((int) velocity);
+	}
+	return outdata_velocity;
+}
+static inline int Velocity2ARGB(float velocityPI){
+	int velocityARGB = 0;
+	velocityPI = velocityPI + 127;
+	//velocityARGB = colorBar[velocityPI];
+	return velocityARGB;
+}
 // ------------------------------------------------------------
 // Description	:color数据自相关计算
 // Parameter	:
@@ -64,9 +88,11 @@ int MultiDeepModeTCDWallFilter(const float *pMDWFCoef, signed short int *pSrc, f
 //		0-计算正确
 //		-1-输入数据指针为空,有错误
 // ------------------------------------------------------------
-int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,float* m_nVelocityAfterAC,int nEnsemble,int nPoints)
+int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,int* m_nVelocityAfterAC,int nEnsemble,int nPoints)
 {
 	float myatan = 0.0;
+	int velocityPI2INT = 0;
+	int velocityARGB = 0;
 	if(m_fAfterCWF==NULL||m_nVelocityAfterAC==NULL){
 		return -1;
 	}
@@ -82,16 +108,19 @@ int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,float* m_nVelocityAfterAC
 			fsumQ+=m_fAfterCWF[j*nPoints*2+i*2]*m_fAfterCWF[(j+1)*nPoints*2+i*2+1]-m_fAfterCWF[(j+1)*nPoints*2+i*2]*m_fAfterCWF[(j)*nPoints*2+i*2+1];
 		}
 		myatan = atan2(fsumQ,fsumI);
+		velocityPI2INT = GetVelocity(myatan);//获取相对速度，从-π到+π，映射到-127到127
+		velocityARGB = colorMap256[velocityPI2INT];
 		//Velocity(j,i)=C（声速）*fprf（采样频率）/(4*pi*cosTh(探头与血管夹角)*f0（探头频率）)*DeepAngleArray(j,i);
-		//m_nVelocityAfterAC[i]=SOUND_SPEED*fprf*atan(fsumQ/fsumI)/(4*PI*cosTh*transferFrequence);
-		m_nVelocityAfterAC[i]=(SOUND_SPEED*fprf*myatan)/(4*PI*cosTh*transferFrequence);
-		//std::cout<<"fsumI: "<<fsumI<<std::endl;
-		//std::cout<<"fsumQ: "<<fsumQ<<std::endl;
-		//std::cout<<"myatan: "<<atan2(0,0)<<std::endl;
-		//std::cout<<"m_nVelocityAfterAC: "<<m_nVelocityAfterAC[i]<<std::endl;
+		//m_nVelocityAfterAC[i]=(SOUND_SPEED*fprf*myatan)/(4*PI*cosTh*transferFrequence);//血流的实际速度
+		m_nVelocityAfterAC[i]=velocityARGB;
 	}
 	return 0;
 }
+
+
+
+
+
 
 
 

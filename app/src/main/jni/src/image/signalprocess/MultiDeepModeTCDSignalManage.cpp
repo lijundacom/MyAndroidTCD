@@ -32,6 +32,9 @@ MultiDeepModeTCDSignalManage::MultiDeepModeTCDSignalManage()
 	m_nMDPointsNum = DEEP_POINTS;	//每条线深度方向的点数
 	m_pfMDWFCoef = (float*) malloc(16 * 16 * sizeof(float));
 	LoadWallCoef(m_pfMDWFCoef, m_nMDEnsemble,m_nMDWFIndex);
+	LoadColorBar(colorMap256,COLOR_BIT);
+
+
 }
 
 MultiDeepModeTCDSignalManage::~MultiDeepModeTCDSignalManage()
@@ -40,6 +43,8 @@ MultiDeepModeTCDSignalManage::~MultiDeepModeTCDSignalManage()
 	{
 		free(m_pfMDWFCoef);
 	}
+
+
 }
 
 // ------------------------------------------------------------
@@ -52,6 +57,8 @@ void MultiDeepModeTCDSignalManage::SetMultiDeepModeTCDParam()
 {
 	//壁滤波系数
 	LoadWallCoef(m_pfMDWFCoef, m_nMDEnsemble,m_nMDWFIndex);
+	//加载colorMap
+
 	//设置各种参数，实际过程中应从xml中读取
 	//上层使用android写xml配置文件
 	//下层使用c++直接读取
@@ -119,7 +126,41 @@ int MultiDeepModeTCDSignalManage::LoadWallCoef(float* fpCoef, int nEnsemble, int
 
 	return 0;
 }
-
+// ------------------------------------------------------------
+// Description	:加载ColorMap
+// Parameter	:
+//	colorMap-存储ARGB的数组
+//	colorBit-颜色位数，256色、128色、64色
+// Retrun Value	:int
+// ------------------------------------------------------------
+int MultiDeepModeTCDSignalManage::LoadColorBar(int* colorMap,int colorBit){
+		FILE* fp;
+		int r=0;
+		int g=0;
+		int b=0;
+		char cPath[50];
+		sprintf(cPath,"/sdcard/Download/data/ColorMap/ColorMap%d.txt",colorBit);
+		fp = fopen(cPath,"rb");
+		if(fp == NULL){
+			//LOGE("LoatColorBar:open the file failed",fp);
+			printf("LoatColorBar:open the file failed");
+			return -1;
+		}
+		char str[20];
+		for(int i = 0;i<colorBit;i++){
+			fgets(str,20,fp);
+			r=atoi(str);
+			fgets(str,20,fp);
+			g=atoi(str);
+			fgets(str,20,fp);
+			b=atoi(str);
+			//cout<<r<<" "<<g<<" "<<b<<endl;
+			colorMap[i] = (255<<24)|(r<<16)|(g<<8)|(b);
+			//cout<<colorMap[i]<<endl;
+		}
+		fclose(fp);
+		return 0;
+}
 // ------------------------------------------------------------
 // Description	:C模式的信号处理，属于CFM模式
 // Parameter	:
@@ -127,7 +168,7 @@ int MultiDeepModeTCDSignalManage::LoadWallCoef(float* fpCoef, int nEnsemble, int
 //	pDst_v-输出的速度矩阵指针
 // Retrun Value	:void
 // ------------------------------------------------------------
-void MultiDeepModeTCDSignalManage::SignalProcess(INT16 *pSrc, float *pDst_v)
+void MultiDeepModeTCDSignalManage::SignalProcess(INT16 *pSrc, int *pDst_v)
 {
 	int nEnsemble = m_nMDEnsemble;
 	int nPoints = m_nMDPointsNum;
@@ -142,29 +183,7 @@ void MultiDeepModeTCDSignalManage::SignalProcess(INT16 *pSrc, float *pDst_v)
 	for(int i=0;i<nPoints;i++){
 		pDst_v[i]=m_nVelocityAfterAC[i];
 	}
-	//printf("m_nVelocityAfterAC\n");
-	//PrintArray(nPoints,m_nVelocityAfterAC);
-	//CAutoCorrelation_Neon(m_fAfterCWF, m_nVelocityAfterAC, m_unPowerAfterAC, m_unVarianceAfterAC, nEnsemble, nLines, nPoints, m_nCovarianceCoef, m_fDigitalGain, m_nStartPointOfGain);
 
-//	//速度阀值
-//	VelocityThreshold(m_nVelocityOut, nPoints, m_nVelocityThreshold);
-//
-//	//速度平滑
-//	VelocitySmooth(m_nVelocityOut, m_nVAfterSmooth, m_pSmoothWeightCoeff, nPoints, m_nSmoothWeightCoeffRow,
-//			m_nSmoothWeightCoeffCol, m_nVelocityThreshold);
-//	//速度相关
-//	VelocityCorrelation(m_nVAfterSmooth, m_nVPersistCache, nPoints, m_nPersist);
-//	//速度平滑
-//	VelocitySmooth(m_nVAfterSmooth, pDst_v, m_pSmoothWeightCoeff, nPoints, m_nSmoothWeightCoeffRow,
-//			m_nSmoothWeightCoeffCol, m_nVelocityThreshold);
-//
-//	if (0 == m_nMorphologyFlag)
-//	{
-//		VelocityThreshold(pDst_v, nPoints, m_nVelocityThreshold);
-//	}
-
-
-	//pDst_v与m_nVelocityOut转换的函数
 }
 
 

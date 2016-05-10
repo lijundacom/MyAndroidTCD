@@ -16,7 +16,8 @@
 #define TRANSFER_FREQ 2000000 //探头频率
 #define TGC_NUM (8)
 #define MAX_FOCUS_NUM (16)
-
+#define COLOR_BIT (256)//colorMap是256色的
+extern int colorMap256[];
 //表示一个pos代表多少厘米的深度
 //表示一个pos代表多少厘米的深度
 #define FOCUSPOSUNIT_LINE   0.5
@@ -72,9 +73,9 @@
 
 
 //------------MultiDeepModeTCD-----
-#define DEEP_POINTS 10 //将采样后每条线有多少个点数
+#define DEEP_POINTS 200 //将采样后每条线有多少个点数
 #define MAX_MD_ENSEMBLE 8 //做回归滤波器/自相关的点数
-
-
+int NativeGetDeepPoint();
+extern int C_MultiDeepModeTCDARGBArray2[];
 
 #endif /* IMAGEDEF_H_ */

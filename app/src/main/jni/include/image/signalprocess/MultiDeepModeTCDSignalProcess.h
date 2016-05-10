@@ -11,6 +11,7 @@
 #include "../../../include/image/GlobalDefine.h"
 #include "../../../include/image/utility/TimerTest.h"
 #include "../../../include/image/mode/MultiDeepModeTCDThread.h"
+#include "../../../include/image/signalprocess/MultiDeepModeTCDSignalManage.h"
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
@@ -33,7 +34,7 @@ extern int transferFrequence;//探头频率
 //		0-计算正确
 //		-1-输入数据指针为空,有错误
 // ------------------------------------------------------------
-int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,float* m_nVelocityAfterAC,int nEnsemble,int nPoints);
+int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,int* m_nVelocityAfterAC,int nEnsemble,int nPoints);
 //int MultiDeepModeTCDAutoCorrelation(float* m_fAfterCWF,double* m_nVelocityAfterAC,int nEnsemble,int nPoints);
 // ------------------------------------------------------------
 // Description	:壁滤波

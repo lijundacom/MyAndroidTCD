@@ -8,5 +8,7 @@ public class USImageJNI {
         System.loadLibrary("USImageJNI");
     }
     public static native String InitALLThreads();
+    public static native int[] GetMultiDeepModeTCDARGBArray();
+    public static native int GetDeepPoint();
     //public static native String TestString();
 }

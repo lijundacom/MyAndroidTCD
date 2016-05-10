@@ -10,7 +10,8 @@ signed short int* ReadFile(char* fileName,int deepPoint,int ensemble,long IQOffs
 	FILE* fp = NULL;
 	bool bRet = true;
 	int head = 1;
-	int deepth=5;
+	int deepth=deepPoint/2;
+	int width = deepPoint/8;
 	signed short int I;
 	signed short int Q;
 	if (fileName == NULL){
@@ -36,7 +37,7 @@ signed short int* ReadFile(char* fileName,int deepPoint,int ensemble,long IQOffs
 		
 			fread(&I,sizeof(signed short int),1,fp);
 			fread(&Q,sizeof(signed short int),1,fp);
-			for(int j=deepth-2;j<deepth+2;j++){
+			for(int j=deepth-width;j<deepth+width;j++){
 				IQArray[i*deepPoint*2+j*2]=I;
 				IQArray[i*deepPoint*2+j*2+1]=Q;
 			}
@@ -57,6 +58,17 @@ void PrintArray(int deepPoint,int  ensemble,signed short int* IQArray){
 		std::cout<<std::endl;
 		}
 }
+void PrintArray(int deepPoint,int  ensemble,int* IQArray){
+	MyStreamBuf g_MyStreamBuf;
+	std::cout.rdbuf(&g_MyStreamBuf);
+	for (int i=0;i<deepPoint;i++){
+
+		for (int j = 0;j<ensemble;j++){
+			std::cout<<" ("<<IQArray[j*deepPoint*2+i*2]<<","<<IQArray[j*deepPoint*2+i*2+1]<<") ";
+		}
+		std::cout<<std::endl;
+	}
+}
 void PrintArray(int deepPoint,int  ensemble,float* IQArray){
     MyStreamBuf g_MyStreamBuf;
     std::cout.rdbuf(&g_MyStreamBuf);
@@ -75,6 +87,14 @@ void PrintArray(int deepPoint,signed short int* Array){
 				std::cout<<" ("<<Array[i]<<") ";
 		std::cout<<std::endl;
 		}
+}
+void PrintArray(int deepPoint,int* Array){
+	MyStreamBuf g_MyStreamBuf;
+	std::cout.rdbuf(&g_MyStreamBuf);
+	for (int i=0;i<deepPoint;i++){
+		std::cout<<" ("<<Array[i]<<") ";
+		std::cout<<std::endl;
+	}
 }
 void PrintArray(int deepPoint,float* velocityArray){
     MyStreamBuf g_MyStreamBuf;

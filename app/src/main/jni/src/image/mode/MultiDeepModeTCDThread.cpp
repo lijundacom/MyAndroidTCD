@@ -27,7 +27,7 @@ static SignalProcess::MultiDeepModeTCDSignalManage objMultiDeepModeTCDSignalMana
 static PingPangBuffer<INT16> ParsedMultiDeepModeTCDBuffer(sizeof(INT16) * MAX_MD_ENSEMBLE * DEEP_POINTS*2);
 
 //MultiDeepModeTCD模式的数据帧，图像处理模块和显示模块之间的缓冲
-static Buffer::CycleBuffer<float> MultiDeepModeTCDFrameBuffer(sizeof(float) * DEEP_POINTS);
+static Buffer::CycleBuffer<int> MultiDeepModeTCDFrameBuffer(sizeof(int) * DEEP_POINTS);
 
 // ------------------------------------------------------------
 // Description	:获取解析之后的MultiDeep缓冲区数据
@@ -104,10 +104,10 @@ void * MultiDeepModeTCDSignalProcessThread(void*)
 	// MultiDeepModeTCD 从乒乓缓存中读取IQ数据的指针
 	signed short int * pParsedMultiDeepModeTCDData = NULL;
 	//IQ数据处理后生成的速度矩阵
-	float* pParsedMultiDeepModeTCDVelocity = (float*)malloc(DEEP_POINTS*sizeof(float));
+	int* pParsedMultiDeepModeTCDVelocity = (int*)malloc(DEEP_POINTS*sizeof(int));
 
-	//用于显示的RGB数据
-	float * pParsedMultiDeepModeTCDFrame= NULL;
+	//用于显示的ARGB数据
+	int * pParsedMultiDeepModeTCDFrame= NULL;
     int nCount = 0;
 	//MultiDeepModeTCDSignalManage
 	while (1)
@@ -168,7 +168,7 @@ void * MultiDeepModeTCDImageProcessThread(void*)
 	int nCnt = 0;
 
 	//Color Frame
-	float *pMultiDeepModeTCDFrameDisp = NULL;
+	int *pMultiDeepModeTCDFrameDisp = NULL;
 
 
 	while (1)
@@ -195,4 +195,34 @@ void * MultiDeepModeTCDImageProcessThread(void*)
 
 	}
 
+}
+// --------------------------------------------------------------
+// Description	:获取最新数据接口，供显示模块调用以获取Image处理后的数据
+// Parameters	:
+//		pMultiDeepModeTCDFrameDisp-ARGB颜色数组指针
+// Return Value	:
+//		0-获取数据失败
+//		1-获取数据成功
+// --------------------------------------------------------------
+int* GetMultiDeepModeTCDFrameBuffer(int* pMultiDeepModeTCDFrameDisp)
+{
+	int nCnt = 0;
+	//Color Frame
+	ThreadSpace::GetMultiDeepModeTCDImageThread()->SuspendCheck();
+	LOGI( "MultiDeepModeTCD mode image thread is start,%d",nCnt);
+	SynSem::GetIDSem()->m_Sem_MultiDeepModeTCD.ConsumerWait();
+	//get the cycle buffer
+	int nRet = MultiDeepModeTCDFrameBuffer.GetReadPointer(&pMultiDeepModeTCDFrameDisp);
+	if (0 == nRet)
+	{
+		LOGE("GetReadPointer failed in the GetMultiDeepModeTCD mode image thread!");
+		//printf("GetReadPointer failed in the GetMultiDeepModeTCD mode image thread!\n");
+	}
+		//printf("显示\n");
+
+	//PrintArray(DEEP_POINTS,pMultiDeepModeTCDFrameDisp);
+
+	SynSem::GetIDSem()->m_Sem_MultiDeepModeTCD.ConsumerDone();
+	LOGI( "MultiDeepModeTCD mode image thread is done,%d",nCnt);
+	return pMultiDeepModeTCDFrameDisp;
 }

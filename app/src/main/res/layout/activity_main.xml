@@ -19,4 +19,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/TextView1"
         android:text="start"/>
+    <com.example.ljd.myandroidtcd.MyMultiDeepTCDView
+        android:id="@+id/SurfaceView02"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/bt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+    </com.example.ljd.myandroidtcd.MyMultiDeepTCDView>
+    <com.example.ljd.myandroidtcd.MyMultiDeepTCDViewTest
+        android:id="@+id/SurfaceView03"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/SurfaceView02"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+    </com.example.ljd.myandroidtcd.MyMultiDeepTCDViewTest>
 </RelativeLayout>

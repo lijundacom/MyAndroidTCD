@@ -24,8 +24,8 @@ private:
 	float m_fAfterCWF[MAX_MD_ENSEMBLE * DEEP_POINTS * 2];
 
 	//Velocity After AutoCorrelation
-	float m_nVelocityAfterAC[DEEP_POINTS];
-
+	int m_nVelocityAfterAC[DEEP_POINTS];
+	
 
 	//Velocity Out Data
 	INT8 m_nVelocityOut[DEEP_POINTS ];
@@ -37,7 +37,8 @@ private:
 	//壁滤波系数
 	float* m_pfMDWFCoef;
 
-	//每一个点的数据采样个数，从4到16条
+
+		//每一个点的数据采样个数，从4到16条
 	int m_nMDEnsemble;
 
 
@@ -105,7 +106,7 @@ private:
 	//		-1-加载壁滤波系数失败，找不到文件
 	// ------------------------------------------------------------
 	int LoadWallCoef(float* fpCoef, int nEnsemble, int nCWFIndex);
-
+	int LoadColorBar(int* colorMap,int colorBit);
 	// ------------------------------------------------------------
 	// Description	:计算能量动态范围变换映射表m_DRCurve，看算法属于线性压缩
 	// Parameter	:
@@ -154,7 +155,7 @@ public:
 	// Retrun Value	:void
 	// ------------------------------------------------------------
 	void SignalProcess(INT16 *pSrc , float *pDst_v);
-	void SignalProcess(INT16 *pSrc , double *pDst_v);
+	void SignalProcess(INT16 *pSrc , int *pDst_v);
 
 	// ------------------------------------------------------------
 	// Description	:C模式的信号处理，属于DPI模式
